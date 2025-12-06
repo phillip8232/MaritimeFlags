@@ -72,14 +72,12 @@
     }
   </style>
   <script>
-    // Flags list matching your Special.html file
     const flags = [
       "FORM", "CODE", "CORPEN", "GROUP-FORTILLA", "PREP", 
       "EMERGENCY", "INT", "STBD", "STATION", "SPEED", 
       "SUBDIV", "TURN", "DESIG"
     ];
 
-    // Descriptions based on standard ATP-01 / ICS meanings
     const descriptions = [
       "Formation",
       "Code / Answer (International Code of Signals)",
@@ -104,13 +102,12 @@
 
         const img = document.createElement("img");
         img.className = "flag-img";
-        img.src = `/home/limix/FlagWebApplication/MARITIME_FLAGS/${flags[i]}.png`;
+        img.src = `https://github.com/phillip8232/MaritimeFlags/blob/main/MARITIME_FLAGS/${flags[i]}.png`;
         img.alt = flags[i];
 
         const info = document.createElement("div");
         info.className = "info";
         
-        // Removed Morse line as these special tactical flags are primarily visual
         info.innerHTML = `
           <p><strong>${flags[i]}</strong></p>
           <p>${descriptions[i]}</p>
