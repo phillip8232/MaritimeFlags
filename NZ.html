@@ -160,7 +160,6 @@
         const flags = ["NOVEMBER", "OSCAR", "PAPA", "QUEBEC", "ROMEO", "SIERRA", "TANGO", "UNIFORM", "VICTOR", "WHISKEY", "XRAY", "YANKEE", "ZULU", "P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"];
         const pennants = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"];
 
-        // Initialize Flag Set (If empty or missing, create a full set)
         let flagSet = JSON.parse(localStorage.getItem('QuizFlagSet') || '[]');
         if (flagSet.length === 0 || JSON.parse(localStorage.getItem('QuizFlagSet')).length <= 0) {
              flagSet = [...flags]; // Reset to full set
@@ -169,8 +168,7 @@
 
         let randomIndex = Math.floor(Math.random() * flagSet.length);
         let randomFlag = flagSet[randomIndex];
-
-        // Time 
+ 
         function formatTime(milliseconds) {
             const totalSeconds = Math.floor(milliseconds / 1000);
             const minutes = Math.floor(totalSeconds / 60);
@@ -193,77 +191,60 @@
             const resultsScreen = document.getElementById('resultsScreen');
             resultsScreen.classList.add('show');
 
-            // Clear the quiz session data to prepare for a new quiz
             localStorage.removeItem('QuizFinalTime');
         }
 
-        // Global variable to store the timer start value from local storage
         let quizStartTime = 0;
 
         window.onload = function() {
-            // --- Timer Initialization Logic ---
             const storedStartTime = localStorage.getItem('QuizStartTime');
             if (!storedStartTime) {
-                // Timer starts for a fresh quiz session
                 quizStartTime = Date.now();
                 localStorage.setItem('QuizStartTime', quizStartTime.toString());
             } else {
-                // Resume existing timer from the value saved before the last reload
                 quizStartTime = parseInt(storedStartTime, 10);
             }
             
-            // --- Quiz Completion Check on Load ---
             if (flagSet.length === 0) {
-                // Quiz is already finished (e.g., after the final reload before displaying results)
                 showResults();
-                return; // Stop execution of standard quiz load logic
+                return; 
             }
 
-            // --- Standard Quiz Load Logic ---
             document.getElementById('answer').value = "";
             const img = document.getElementById("flagImg");
-            img.src = `/home/limix/FlagWebApplication/MARITIME_FLAGS/${randomFlag}.png`;
+            img.src = `https://github.com/phillip8232/MaritimeFlags/blob/main/MARITIME_FLAGS/${randomFlag}.png`;
             console.log("Random flag selected:", randomFlag);
         };
 
         document.addEventListener('keypress', function(event) {
             const userInput = document.getElementById('answer');
             if (event.key === 'Enter') {
-                // Prevent form submission if this were a form
                 event.preventDefault(); 
                 
-                // Check if the random flag is a pennant.
                 const isPennant = pennants.includes(randomFlag);
 
                 let isCorrect = false;
 
                 if (isPennant) {
-                    // For pennants, require the full answer (e.g., "P0").
                     isCorrect = randomFlag.toUpperCase() === userInput.value.toUpperCase();
                 } else {
-                    // For letter flags, accept the single letter shorthand (e.g., "A" for ALPHA).
                     isCorrect = randomFlag[0] === userInput.value.toUpperCase()[0];
                 }
 
                 if (isCorrect) {
-                    // Correctly remove the guessed flag from the array
                     flagSet.splice(randomIndex, 1);
                     localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
 
                     if (flagSet.length === 0) {
-                        // QUIZ COMPLETE!
                         const finalTime = Date.now() - quizStartTime;
                         localStorage.setItem('QuizFinalTime', finalTime.toString());
                         localStorage.removeItem('QuizStartTime'); // Stop the timer
 
-                        // Transition to results screen on the current page
                         showResults();
                     } else {
-                        // Quiz continues, reload for next flag
                         location.reload();
                     }
                 } else {
-                    // Incorrect answer, add the flag back to the end of the array
                     flagSet.push(randomFlag);
                     localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
                     document.getElementById('answer').value = "";
