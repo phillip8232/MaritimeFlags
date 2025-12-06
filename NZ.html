@@ -146,7 +146,6 @@
             transform: translateY(-2px);
         }
 
-        /* Main app container to manage visibility */
         #quizApp {
             display: flex;
             flex-direction: column;
@@ -162,7 +161,7 @@
 
         let flagSet = JSON.parse(localStorage.getItem('QuizFlagSet') || '[]');
         if (flagSet.length === 0 || JSON.parse(localStorage.getItem('QuizFlagSet')).length <= 0) {
-             flagSet = [...flags]; // Reset to full set
+             flagSet = [...flags]; 
              localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
         }
 
@@ -212,7 +211,7 @@
 
             document.getElementById('answer').value = "";
             const img = document.getElementById("flagImg");
-            img.src = `https://github.com/phillip8232/MaritimeFlags/blob/main/MARITIME_FLAGS/${randomFlag}.png`;
+            img.src = `https://raw.githubusercontent.com/phillip8232/MaritimeFlags/refs/heads/main/MARITIME_FLAGS/${randomFlag}.png`;
             console.log("Random flag selected:", randomFlag);
         };
 
@@ -238,7 +237,7 @@
                     if (flagSet.length === 0) {
                         const finalTime = Date.now() - quizStartTime;
                         localStorage.setItem('QuizFinalTime', finalTime.toString());
-                        localStorage.removeItem('QuizStartTime'); // Stop the timer
+                        localStorage.removeItem('QuizStartTime');
 
                         showResults();
                     } else {
