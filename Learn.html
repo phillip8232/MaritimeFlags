@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-blue: #00072D;
+      --navy: #001f4c;
+      --gold: #FFD700;
+      --silver: #C0C0C0;
+      --white: #FFFFFF;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--dark-blue);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: var(--gold);
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .menu a {
+      text-decoration: none;
+    }
+
+    .menu button {
+      width: 100%;
+      padding: 12px 0;
+      font-size: 1.1em;
+      font-weight: 700;
+      background-color: var(--navy);
+      color: var(--white);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    }
+
+    .menu button:hover {
+      background-color: var(--gold);
+      color: var(--dark-blue);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .menu button {
+        font-size: 1em;
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <a href="AlphabetLearn.html"><button>Alphabet</button></a>
+    <a href="NumLearn.html"><button>Number</button></a>
+    <a href="PNumLearn.html"><button>Pennant Number</button></a>
+    <a href="SpecialLearn.html"><button>Special</button></a>
+  </div>
+</body>
+</html>
+

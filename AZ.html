@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Flag Recognition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-blue: #00072D;
+            --navy: #001f4c;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --white: #FFFFFF;
+            --red: #FF4136;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-blue);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            position: relative; 
+        }
+
+        h1 {
+            color: var(--gold);
+            font-size: clamp(1.5em, 5vw, 2.5em);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s;
+        }
+
+        .flag-container {
+            border: 4px solid var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            padding: 10px;
+            margin-bottom: 30px;
+            background-color: var(--navy);
+            transition: opacity 0.5s;
+        }
+
+        #flagImg {
+            display: block;
+            height: 256px;
+            width: 256px;
+        }
+
+        #answer {
+            padding: 12px;
+            font-size: 1.2em;
+            border: 2px solid var(--silver);
+            border-radius: 8px;
+            background-color: var(--navy);
+            color: var(--white);
+            width: clamp(150px, 60vw, 250px);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #answer::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #answer:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+
+        .hint {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--silver);
+            transition: opacity 0.5s;
+        }
+
+        #resultsScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 7, 45, 0.95); /* Darker overlay */
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #resultsScreen.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .result-box {
+            background-color: var(--navy);
+            border: 4px solid var(--red);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(255, 65, 54, 0.3);
+            max-width: 90%;
+            margin: 20px;
+        }
+
+        .result-box h2 {
+            color: var(--silver);
+            font-size: clamp(1.8em, 6vw, 3em);
+            margin-bottom: 20px;
+        }
+
+        .time-display {
+            color: var(--gold);
+            font-size: clamp(2em, 8vw, 4em);
+            font-weight: 700;
+            margin: 20px 0 40px;
+        }
+
+        .home-link {
+            display: inline-block;
+            background-color: var(--gold);
+            color: var(--dark-blue);
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .home-link:hover {
+            background-color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        #quizApp {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+    </style>
+    <script>
+        const flags = ["ALPHA", "BRAVO", "CHARLIE", "DELTA", "ECHO", "ECHO", "FOXTROT", "GOLF", "HOTEL", "INDIA", "JULIET", "KILO", "LIMA", "MIKE", "NOVEMBER", "OSCAR", "PAPA", "QUEBEC", "ROMEO", "SIERRA", "TANGO", "UNIFORM", "VICTOR", "WHISKEY", "XRAY", "YANKEE", "ZULU"];
+        const pennants = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"];
+
+        let flagSet = JSON.parse(localStorage.getItem('QuizFlagSet') || '[]');
+        if (flagSet.length === 0 || JSON.parse(localStorage.getItem('QuizFlagSet')).length <= 0) {
+             flagSet = [...flags]; // Reset to full set
+             localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
+        }
+
+        let randomIndex = Math.floor(Math.random() * flagSet.length);
+        let randomFlag = flagSet[randomIndex];
+ 
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const ms = milliseconds % 1000;
+
+            const pad = (num, len = 2) => String(num).padStart(len, '0');
+
+            return `${pad(minutes)}:${pad(seconds)}.${pad(ms, 3)}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizApp').style.display = 'none';
+                        
+            const finalTimeMs = parseInt(localStorage.getItem('QuizFinalTime') || '0', 10);
+            const formattedTime = formatTime(finalTimeMs);
+
+            document.getElementById('finalTime').textContent = formattedTime;
+            const resultsScreen = document.getElementById('resultsScreen');
+            resultsScreen.classList.add('show');
+
+            
+            localStorage.removeItem('QuizFinalTime');
+        }
+
+        let quizStartTime = 0;
+
+        window.onload = function() {
+            const storedStartTime = localStorage.getItem('QuizStartTime');
+            if (!storedStartTime) {
+                quizStartTime = Date.now();
+                localStorage.setItem('QuizStartTime', quizStartTime.toString());
+            } else {
+                quizStartTime = parseInt(storedStartTime, 10);
+            }
+            
+            if (flagSet.length === 0) {
+                showResults();
+                return; 
+            }
+
+            document.getElementById('answer').value = "";
+            const img = document.getElementById("flagImg");
+            img.src = `/home/limix/FlagWebApplication/MARITIME_FLAGS/${randomFlag}.png`;
+            console.log("Random flag selected:", randomFlag);
+        };
+
+        document.addEventListener('keypress', function(event) {
+            const userInput = document.getElementById('answer');
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                
+                const isPennant = pennants.includes(randomFlag);
+
+                let isCorrect = false;
+
+                if (isPennant) {
+                    isCorrect = randomFlag.toUpperCase() === userInput.value.toUpperCase();
+                } else {
+                    isCorrect = randomFlag[0] === userInput.value.toUpperCase()[0];
+                }
+
+                if (isCorrect) {
+                    flagSet.splice(randomIndex, 1);
+                    localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
+
+                    if (flagSet.length === 0) {
+                        const finalTime = Date.now() - quizStartTime;
+                        localStorage.setItem('QuizFinalTime', finalTime.toString());
+                        localStorage.removeItem('QuizStartTime'); // Stop the timer
+
+                        showResults();
+                    } else {
+                        location.reload();
+                    }
+                } else {
+                    flagSet.push(randomFlag);
+                    localStorage.setItem('QuizFlagSet', JSON.stringify(flagSet));
+                    document.getElementById('answer').value = "";
+                }
+            }
+        });
+    </script>
+</head>
+<body> 
+    <div id="quizApp">
+        <div class="flag-container">
+            <img id="flagImg" src="" alt="Maritime Flag">
+        </div>
+        <input type="text" id="answer" name="answer" placeholder="Type your answer" required autofocus>
+        <p class="hint">Press Enter to submit.</p>
+    </div>
+
+    <div id="resultsScreen">
+        <div class="result-box">
+            <p style="font-size: 1.5em; color: var(--silver); margin-bottom: 5px;">Your Time:</p>
+            <p id="finalTime" class="time-display">00:00.000</p>
+            <a href="index.html" class="home-link">Return to Home</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pennant Numbers Learn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-blue: #00072D;
+      --navy: #001f4c;
+      --gold: #FFD700;
+      --silver: #C0C0C0;
+      --white: #FFFFFF;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--dark-blue);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: var(--gold);
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .card {
+      border: 4px solid var(--gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      padding: 20px;
+      margin: 20px;
+      background-color: var(--navy);
+      border-radius: 12px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .flag-img {
+      height: 128px;
+      width: 128px;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      text-align: center;
+    }
+
+    .info p {
+      margin: 6px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+  </style>
+  <script>
+    const pennants = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"];
+
+    const morse = [
+      "-----", ".----", "..---", "...--", "....-", ".....",
+      "-....", "--...", "---..", "----."
+    ];
+
+    const descriptions = [
+      "Pennant 0",
+      "Pennant 1",
+      "Pennant 2",
+      "Pennant 3",
+      "Pennant 4",
+      "Pennant 5",
+      "Pennant 6",
+      "Pennant 7",
+      "Pennant 8",
+      "Pennant 9"
+    ];
+
+    window.onload = function() {
+      const grid = document.getElementById("grid");
+      for (let i = 0; i < pennants.length; i++) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.className = "flag-img";
+        img.src = `/home/limix/FlagWebApplication/MARITIME_FLAGS/${pennants[i]}.png`;
+        img.alt = pennants[i];
+
+        const info = document.createElement("div");
+        info.className = "info";
+        info.innerHTML = `
+	  <p><strong>${pennants[i]}</strong> </p>
+          <p><strong>${descriptions[i]}</strong></p>
+        `;
+
+        card.appendChild(img);
+        card.appendChild(info);
+        grid.appendChild(card);
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Pennant Number</h1>
+  <div id="grid" class="grid"></div>
+</body>
+</html>
